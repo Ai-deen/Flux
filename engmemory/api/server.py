@@ -21,6 +21,8 @@ from typing import Optional
 
 from fastapi import FastAPI, HTTPException, Depends, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from ..orchestrator.session import DevSession
@@ -1314,3 +1316,26 @@ async def clear_trigger(ticket_key: str):
         trigger_file.unlink()
         return {"cleared": True}
     return {"cleared": False}
+
+
+# ─── Static Files (Dashboard) ────────────────────────────────────────────
+
+from pathlib import Path as _Path
+
+_DASHBOARD_DIR = _Path(__file__).resolve().parent.parent.parent / "dashboard" / "dist"
+if not _DASHBOARD_DIR.exists():
+    _DASHBOARD_DIR = _Path(os.getcwd()) / "dashboard" / "dist"
+
+if _DASHBOARD_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=str(_DASHBOARD_DIR / "assets")), name="assets")
+
+    @app.get("/")
+    async def serve_root():
+        return FileResponse(str(_DASHBOARD_DIR / "index.html"))
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        file_path = _DASHBOARD_DIR / full_path
+        if file_path.exists() and file_path.is_file():
+            return FileResponse(str(file_path))
+        return FileResponse(str(_DASHBOARD_DIR / "index.html"))
