@@ -1,0 +1,115 @@
+{
+  "name": "flux",
+  "displayName": "Flux - AI Developer Lifecycle Automation",
+  "description": "AI-powered developer lifecycle automation. From ticket to code, automatically. Ask questions about your git history, view pipeline status, and manage AI agents.",
+  "version": "1.0.0",
+  "publisher": "flux-team",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other", "Machine Learning"],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "engmemory",
+          "title": "Flux",
+          "icon": "media/icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "engmemory": [
+        {
+          "id": "engmemory.commits",
+          "name": "Recent Commits"
+        },
+        {
+          "id": "engmemory.pipeline",
+          "name": "Pipeline",
+          "type": "webview"
+        },
+        {
+          "id": "engmemory.ask",
+          "name": "Ask AI",
+          "type": "webview"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "engmemory.ask",
+        "title": "Flux: Ask About Commits"
+      },
+      {
+        "command": "engmemory.refresh",
+        "title": "Flux: Refresh Commits",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "engmemory.init",
+        "title": "Flux: Install Hook"
+      },
+      {
+        "command": "engmemory.index",
+        "title": "Flux: Index Commits to Azure"
+      },
+      {
+        "command": "engmemory.status",
+        "title": "Flux: Check Status"
+      },
+      {
+        "command": "engmemory.triggerDeveloper",
+        "title": "Flux: Start Developer Agent"
+      },
+      {
+        "command": "engmemory.triggerReviewer",
+        "title": "Flux: Start Reviewer Agent"
+      },
+      {
+        "command": "engmemory.triggerTester",
+        "title": "Flux: Start Tester Agent"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "engmemory.refresh",
+          "when": "view == engmemory.commits",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Flux",
+      "properties": {
+        "engmemory.pythonPath": {
+          "type": "string",
+          "default": "python",
+          "description": "Path to Python executable with Flux installed"
+        },
+        "engmemory.autoIndex": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically index commits to Azure after each commit"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  }
+}

@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.pyc
+
+# Virtual environments
+venv/
+ENV/
+.env/
+.env
+
+# Node
+node_modules/
+dist/
+
+# VS Code
+.vscode/
+
+# Jupyter Notebooks
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Other
+*.sqlite3
+.ai_memory/
+project/
+
+# Allow deploy dist (pre-built for deployment)
+!deploy/dashboard/dist/
