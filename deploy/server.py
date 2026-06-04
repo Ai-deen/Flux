@@ -418,8 +418,17 @@ async def get_recent_commits(limit: int = 20):
 # Serve built dashboard from ./dashboard/dist
 DASHBOARD_DIR = Path(__file__).parent / "dashboard" / "dist"
 
+if not DASHBOARD_DIR.exists():
+    # Try alternate path (in case of different working directory)
+    DASHBOARD_DIR = Path(os.getcwd()) / "dashboard" / "dist"
+
 if DASHBOARD_DIR.exists():
     app.mount("/assets", StaticFiles(directory=str(DASHBOARD_DIR / "assets")), name="assets")
+
+    @app.get("/")
+    async def serve_root():
+        """Serve dashboard index at root."""
+        return FileResponse(str(DASHBOARD_DIR / "index.html"))
 
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
@@ -428,6 +437,10 @@ if DASHBOARD_DIR.exists():
         if file_path.exists() and file_path.is_file():
             return FileResponse(str(file_path))
         return FileResponse(str(DASHBOARD_DIR / "index.html"))
+else:
+    @app.get("/")
+    async def no_dashboard():
+        return {"error": "Dashboard not found", "dashboard_dir": str(DASHBOARD_DIR), "cwd": os.getcwd(), "files": os.listdir(".")}
 
 
 # ─── Run ──────────────────────────────────────────────────────────────────
