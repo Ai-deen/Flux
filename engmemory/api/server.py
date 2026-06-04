@@ -370,8 +370,8 @@ async def _post_jira_completion_comment(ticket_key: str, pr_url: str = ""):
 # ─── Dashboard / Overview ─────────────────────────────────────────────────
 
 
-@app.get("/")
-async def root():
+@app.get("/api/status")
+async def root_status():
     sessions = DevSession.list_active()
     return {
         "service": "Flux - AI Developer Lifecycle Platform",
