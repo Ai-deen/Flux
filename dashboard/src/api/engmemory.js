@@ -163,4 +163,29 @@ export const resetDemo = async () => {
   return response.data;
 };
 
+// ─── Local Agent Bridge ──────────────────────────────────────────────────
+
+export const getAgentStatus = async () => {
+  const response = await engmemory.get('/api/agent/status');
+  return response.data;
+};
+
+export const activateTicket = async (ticketKey, summary = '', branch = '') => {
+  const response = await engmemory.post('/api/agent/command', {
+    action: 'activate',
+    ticket_key: ticketKey,
+    summary,
+    branch: branch || ticketKey,
+  });
+  return response.data;
+};
+
+export const askAgent = async (question) => {
+  const response = await engmemory.post('/api/agent/command', {
+    action: 'ask',
+    question,
+  });
+  return response.data;
+};
+
 export default engmemory;

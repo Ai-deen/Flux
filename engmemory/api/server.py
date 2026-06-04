@@ -1318,6 +1318,61 @@ async def clear_trigger(ticket_key: str):
     return {"cleared": False}
 
 
+# ─── Local Agent Bridge ───────────────────────────────────────────────────
+# Allows a local machine to connect to the deployed server
+# and receive commands (activate ticket, open VS Code, etc.)
+
+import time as _time
+
+_agent_commands: list[dict] = []  # Queue of commands for local agent
+_agent_last_seen: float = 0  # Last time agent polled
+
+
+@app.post("/api/agent/command")
+async def queue_agent_command(payload: dict):
+    """Queue a command for the local agent (triggered from dashboard)."""
+    payload["queued_at"] = _time.time()
+    payload["status"] = "pending"
+    _agent_commands.append(payload)
+    return {"queued": True, "command": payload.get("action")}
+
+
+@app.get("/api/agent/poll")
+async def agent_poll():
+    """Local agent polls this to get pending commands."""
+    global _agent_last_seen
+    _agent_last_seen = _time.time()
+
+    pending = [c for c in _agent_commands if c["status"] == "pending"]
+    # Mark as delivered
+    for c in pending:
+        c["status"] = "delivered"
+    return {"commands": pending, "count": len(pending)}
+
+
+@app.post("/api/agent/ack")
+async def agent_ack(payload: dict):
+    """Local agent acknowledges command completion."""
+    cmd_id = payload.get("queued_at")
+    for c in _agent_commands:
+        if c.get("queued_at") == cmd_id:
+            c["status"] = "completed"
+            c["result"] = payload.get("result", "done")
+            break
+    return {"acked": True}
+
+
+@app.get("/api/agent/status")
+async def agent_status():
+    """Check if local agent is connected."""
+    connected = (_time.time() - _agent_last_seen) < 15 if _agent_last_seen else False
+    return {
+        "connected": connected,
+        "last_seen": _agent_last_seen,
+        "pending_commands": len([c for c in _agent_commands if c["status"] == "pending"]),
+    }
+
+
 # ─── Static Files (Dashboard) ────────────────────────────────────────────
 
 from pathlib import Path as _Path
