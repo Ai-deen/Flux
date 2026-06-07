@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getDashboard, getJiraTickets, createSession, closeSession, getTicketSummary } from '../api/engmemory';
+import { getDashboard, getJiraTickets, createSession, closeSession, getTicketSummary, activateTicket } from '../api/engmemory';
 import { GitBranch, MessageSquare, CheckCircle2, Clock, AlertCircle, Zap, Plus, X, Brain } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -53,6 +53,8 @@ export default function TicketSessions() {
     try {
       toast.loading(`Setting up workspace for ${ticketKey}... This may take 30-60 seconds.`, { id: 'activate-progress' });
       await createSession(ticketKey);
+      const ticket = tickets.find(t => t.key === ticketKey);
+      await activateTicket(ticketKey, ticket?.summary || '', ticketKey);
       toast.dismiss('activate-progress');
       toast.success(`${ticketKey} activated! New VS Code window opening...`);
       loadData();
