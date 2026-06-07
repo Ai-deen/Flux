@@ -52,7 +52,7 @@ def handle_activate(cmd: dict):
     summary = cmd.get("summary", "")
     branch = cmd.get("branch", ticket_key)
 
-    log.info(f"Activating ticket: {ticket_key} — {summary}")
+    log.info(f"Activating ticket: {ticket_key} - {summary}")
 
     project_root = get_project_root()
     ticket_dir = project_root / ticket_key
@@ -141,13 +141,13 @@ def handle_command(cmd: dict) -> str:
 
 
 def poll_loop():
-    """Main polling loop — connects to Render and waits for commands."""
-    log.info(f"╔══════════════════════════════════════════════════╗")
-    log.info(f"║  Flux Local Agent                                ║")
-    log.info(f"║  Connected to: {RENDER_URL:<33}║")
-    log.info(f"║  Polling every {POLL_INTERVAL}s for commands              ║")
-    log.info(f"║  Press Ctrl+C to stop                            ║")
-    log.info(f"╚══════════════════════════════════════════════════╝")
+    """Main polling loop - connects to Render and waits for commands."""
+    log.info("==================================================")
+    log.info("  Flux Local Agent")
+    log.info(f"  Connected to: {RENDER_URL}")
+    log.info(f"  Polling every {POLL_INTERVAL}s for commands")
+    log.info("  Press Ctrl+C to stop")
+    log.info("==================================================")
 
     consecutive_errors = 0
 
@@ -160,7 +160,7 @@ def poll_loop():
                 consecutive_errors = 0
 
                 for cmd in commands:
-                    log.info(f"Received command: {cmd.get('action')} — {cmd.get('ticket_key', '')}")
+                    log.info(f"Received command: {cmd.get('action')} - {cmd.get('ticket_key', '')}")
                     result = handle_command(cmd)
                     log.info(f"Result: {result}")
 
@@ -180,7 +180,7 @@ def poll_loop():
         except requests.exceptions.ConnectionError:
             consecutive_errors += 1
             if consecutive_errors == 1:
-                log.warning("Cannot reach server — will retry...")
+                log.warning("Cannot reach server - will retry...")
         except Exception as e:
             consecutive_errors += 1
             if consecutive_errors <= 3:
@@ -191,7 +191,7 @@ def poll_loop():
 
 def main():
     """Entry point."""
-    print("\n⚡ Flux Local Agent — connecting to live dashboard...\n")
+    print("\n[Flux] Local Agent - connecting to live dashboard...\n")
     try:
         poll_loop()
     except KeyboardInterrupt:
