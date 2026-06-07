@@ -446,8 +446,9 @@ function Start-Services {
 
     # Start Local Agent (connects to Render dashboard)
     Write-Host "       Starting local agent (connects to live dashboard)..." -ForegroundColor DarkGray
+    $agentScript = Join-Path $scriptDir "scripts\run_agent.py"
     $agentJob = Start-Process -FilePath "python" `
-        -ArgumentList "-m engmemory.agent.local_agent" `
+        -ArgumentList "`"$agentScript`"" `
         -WorkingDirectory $scriptDir `
         -WindowStyle Normal `
         -PassThru
