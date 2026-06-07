@@ -437,7 +437,7 @@ function Start-Services {
     $agentJob = Start-Process -FilePath "python" `
         -ArgumentList "-m engmemory.agent.local_agent" `
         -WorkingDirectory $scriptDir `
-        -WindowStyle Minimized `
+        -WindowStyle Normal `
         -PassThru
 
     # Start Dashboard in background
