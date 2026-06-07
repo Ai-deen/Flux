@@ -91,6 +91,22 @@ def handle_activate(cmd: dict):
         "activated_at": time.strftime("%Y-%m-%dT%H:%M:%SZ"),
     }, indent=2))
 
+    # Fetch full AI context from the server and write .ticket-context.md
+    log.info(f"Fetching AI context for {ticket_key}...")
+    try:
+        resp = requests.get(f"{RENDER_URL}/api/pipeline/{ticket_key}/developer-prompt", timeout=15)
+        if resp.status_code == 200:
+            prompt_data = resp.json()
+            prompt_text = prompt_data.get("prompt", "")
+            if prompt_text:
+                context_md = ticket_dir / ".ticket-context.md"
+                context_md.write_text(prompt_text, encoding="utf-8")
+                log.info(f"Wrote .ticket-context.md ({len(prompt_text)} chars)")
+        else:
+            log.warning(f"Could not fetch context (status {resp.status_code})")
+    except Exception as e:
+        log.warning(f"Failed to fetch AI context: {e}")
+
     # Open VS Code
     log.info(f"Opening VS Code at {ticket_dir}")
     try:

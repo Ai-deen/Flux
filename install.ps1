@@ -424,6 +424,18 @@ function Start-Services {
     $scriptDir = $PSScriptRoot
     if (-not $scriptDir) { $scriptDir = (Get-Location).Path }
 
+    # Install VS Code extension
+    $vsixPath = Join-Path $scriptDir "vscode-extension\engmemory-0.1.0.vsix"
+    if (Test-Path $vsixPath) {
+        Write-Host "       Installing VS Code extension..." -ForegroundColor DarkGray
+        $installResult = Start-Process -FilePath "code" -ArgumentList "--install-extension `"$vsixPath`" --force" -Wait -PassThru -WindowStyle Hidden
+        if ($installResult.ExitCode -eq 0) {
+            Write-Host "       VS Code extension installed!" -ForegroundColor Green
+        } else {
+            Write-Host "       Extension install skipped (VS Code may not be in PATH)" -ForegroundColor Yellow
+        }
+    }
+
     # Start API server in background
     Write-Host "       Starting API server on port 5051..." -ForegroundColor DarkGray
     $apiJob = Start-Process -FilePath "python" `
