@@ -6,6 +6,10 @@ export default defineConfig({
   server: {
     port: 5174,
     proxy: {
+      '/api': {
+        target: 'http://localhost:5051',
+        changeOrigin: true,
+      },
       '/engmemory': {
         target: 'http://localhost:5051',
         changeOrigin: true,
