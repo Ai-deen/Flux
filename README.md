@@ -1,6 +1,7 @@
 # Flux — AI-Powered Developer Lifecycle Automation
 
 > **From ticket to code, automatically.** Flux reimagines software production by orchestrating AI agents that transform Jira tickets into working code — with full context from Slack conversations, commit history, AI discussions, and team knowledge.
+Video link - https://drive.google.com/file/d/1Mb9GSgt56KLJdqNs_t3VFJzD4NwHRZki/view?usp=sharing
 
 [![Theme](https://img.shields.io/badge/Theme-AI--Powered%20Production%20Function-blue)]()
 [![Stack](https://img.shields.io/badge/Stack-Groq%20%7C%20Azure%20AI%20Search%20%7C%20Azure%20Blob%20%7C%20GitHub%20Copilot-0078D4)]()
